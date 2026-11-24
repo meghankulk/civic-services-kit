@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head>
+<body>
+<title>Civic Services Kit</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="kit.css">
+<link rel="stylesheet" href="ontology/omap.css">
+<link rel="stylesheet" href="builder/builder.css">
+<script src="kit.js"></script>
+<script src="ontology/onto.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="ontology/graph3d.js"></script>
+<script src="ontology/graph2d.js"></script>
+<script src="ontology/omap.js"></script>
+<script src="builder/engine.js"></script>
+<script src="builder/screens.js"></script>
+<script src="builder/open.js"></script>
+<script src="builder/app.js"></script>
+<script src="ontology/page.js"></script>
+
+<div class="announce">Unofficial study, rebuilt from public pages: Kaizen's company site plus the Maryland and Pima County resident apps it runs. <b>Sample data throughout.</b></div>
+
+<header class="top">
+  <div class="top-in">
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 15.5 15.5 8M15.5 8H10M15.5 8v5.5"/></svg><span class="mark-t">Civic Services Kit</span></span>
+    <nav class="views-nav" aria-label="Views"><a href="#components" data-view="components">Components</a><a href="#ontology" data-view="ontology">Ontology</a><a href="#builder" data-view="builder">Builder</a></nav>
+    <span class="grow"></span>
+    <span class="note">Dark = company site · Light = resident platform</span>
+    <div class="seg" role="group" aria-label="Theme">
+      <button data-set-theme="light" aria-pressed="false">Light</button>
+      <button data-set-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+</header>
+
+<div class="oview" id="v-ontology" hidden>
+  <section class="hero">
+    <span class="over">Kaizen Service Ontology · case study</span>
+    <h1>From one goal to every screen.</h1>
+    <p>Before building a product, model it. This ontology starts from what Kaizen says it does, the people who use and run its services, and what they need. It traces each need to a requirement, then to the platform block that builds it, the kit pattern that shows it, the design check that guards it and the public program where it's already live.</p>
+    <div class="metrics" id="ometrics"></div>
+  </section>
+  <div id="omroot"></div>
+  <div class="legend-row" style="margin-top:14px" id="olegend"></div>
+
+  <section class="osec">
+    <header><span class="over">Users</span><h2>Who it serves</h2><p>Seven kinds of users across three surfaces. Residents are the primary user. Everyone else keeps the service running.</p></header>
+    <div class="ucards" id="ousers"></div>
+  </section>
+  <section class="osec">
+    <header><span class="over">Platform</span><h2>Blocks every program reuses</h2><p>Kaizen describes Taproot as a library of building blocks: payments, registrations, identity, triage and approvals, reporting. Mapping requirements to blocks shows which ones carry the most weight, and which a new program gets for free.</p></header>
+    <div class="spec"><div class="spec-b flush"><div class="scroll-x"><table class="otable" id="oblocks"></table></div></div></div>
+  </section>
+  <section class="osec">
+    <header><span class="over">Open questions</span><h2>What I'd ask the team</h2><p>Each one is a place the public record stops. These are where my model could be wrong.</p></header>
+    <div class="qlist" id="oqs"></div>
+  </section>
+  <section class="osec">
+    <header><span class="over">Method</span><h2>How it was built</h2></header>
+    <div class="grid2">
+      <div class="spec"><div class="spec-b col" style="font-size:15px;gap:10px">
+        <p style="margin:0"><b style="font-weight:500">1. Read what's public.</b> Kaizen's site and press, the Maryland and Pima apps, the Colorado partner listing, and DoD releases on the C-UAS Marketplace.</p>
+        <p style="margin:0"><b style="font-weight:500">2. Use the live apps.</b> Every "stated" requirement on the civic side was seen in a working Kaizen app on Nov 20, 2026.</p>
+        <p style="margin:0"><b style="font-weight:500">3. Model the rest.</b> Hollow dots mark my design reading. Each one is a hypothesis to check with the team.</p>
+        <p style="margin:0"><b style="font-weight:500">4. Tie it to the kit.</b> Each requirement points to a kit pattern. Three patterns aren't built yet, and those are the next ones to design.</p>
+      </div></div>
+      <div class="spec"><div class="spec-h"><b>Sources</b><span>public pages</span></div><div class="spec-b col" id="osrc" style="gap:8px;font-size:14px"></div></div>
+    </div>
+  </section>
+  <section class="osec">
+    <header><span class="over">Reference</span><h2>Ontology as JSON</h2></header>
+    <div style="display:flex;gap:10px;align-items:center"><button class="btn btn-secondary" id="ocopy" type="button">Copy JSON</button><span class="t-small faint" id="ocopymsg"></span></div>
+    <pre class="json" id="ojson"></pre>
+  </section>
+  <footer class="foot"><span>Unofficial design study for interview prep. It isn't affiliated with or endorsed by Kaizen or any agency. "Stated" means seen on a public page or a live app on November 20, 2026.</span></footer>
+</div>
+
+<div class="bview" id="v-builder" hidden>
+  <section class="hero">
+    <span class="over">Kaizen Product Builder</span>
+    <h1>Describe any service. Get the product.</h1>
+    <p>Write a prompt for any government service. Claude designs it against the Kaizen ontology: the people, their needs, the surfaces and navigation, the data objects, the requirements (matched to Kaizen's where they mean the same thing) and every flow. The builder then plays each flow screen by screen, drawn with the component library. Ask for changes in plain words. Without Claude, it builds the closest preset from the ontology.</p>
+  </section>
+  <div id="broot"></div>
+  <footer class="foot"><span>Unofficial design study for interview prep. It isn't affiliated with or endorsed by Kaizen or any agency. Agencies, people, products and prices in the flows are sample data.</span></footer>
+</div>
+
+<div class="shell" id="v-components">
+  <nav class="rail" aria-label="Sections">
+    <span class="over">Foundations</span>
+    <a href="#color">Color</a><a href="#type">Type</a><a href="#shape">Shape &amp; space</a>
+    <span class="over">Components</span>
+    <a href="#buttons">Buttons</a><a href="#inputs">Inputs</a><a href="#chips">Filters &amp; chips</a><a href="#cards">Cards</a><a href="#nav">Navigation</a><a href="#overlays">Dialogs &amp; feedback</a>
+    <span class="over">Patterns</span>
+    <a href="#booking">Booking</a><a href="#maps">Maps</a><a href="#checkout">Cart &amp; checkout</a><a href="#staff">Staff console</a>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <span class="over">Design study · November 2026</span>
+      <h1>Components for public services people actually finish.</h1>
+      <p>A component library built from what Kaizen ships in public. The resident platform (MUI, DM Sans, a single deep-teal action color, 16px cards on a #F7F7F7 band) sits next to the company site's dark, quiet type. Every part below is live: click it, filter it, book it.</p>
+      <div class="facts">
+        <div><span class="over">Sources</span><b>kaizenlabs.co · parkdayuse.maryland.gov · explore.pima.gov</b></div>
+        <div><span class="over">Action color</span><b class="mono">#0D5370</b></div>
+        <div><span class="over">Target</span><b>WCAG 2.1 AA · Section 508</b></div>
+      </div>
+    </section>
+
+    <!-- ================= COLOR ================= -->
+    <section class="sheet" id="color">
+      <header><span class="over">Foundations</span><h2>Color</h2><p>One action color does all the work. Neutrals carry structure: a gray band for search and filters, white surfaces for results. Status colors are kept apart from the action color, so "Open" never looks like a button.</p></header>
+      <div class="spec"><div class="spec-h"><b>Resident platform (light)</b><span>measured from Maryland + Pima</span></div>
+        <div class="spec-b"><div class="swatches">
+          <div class="sw"><i style="background:#0D5370"></i><div><b>Action</b><span>#0D5370</span></div></div>
+          <div class="sw"><i style="background:#1A1A1A"></i><div><b>Ink</b><span>#1A1A1A</span></div></div>
+          <div class="sw"><i style="background:#757575"></i><div><b>Placeholder</b><span>#757575</span></div></div>
+          <div class="sw"><i style="background:#F7F7F7"></i><div><b>Band</b><span>#F7F7F7</span></div></div>
+          <div class="sw"><i style="background:#FFFFFF"></i><div><b>Surface</b><span>#FFFFFF</span></div></div>
+          <div class="sw"><i style="background:#E3E3E3"></i><div><b>Line</b><span>#E3E3E3</span></div></div>
+        </div></div></div>
+      <div class="spec"><div class="spec-h"><b>Mission (dark)</b><span>measured from kaizenlabs.co</span></div>
+        <div class="spec-b"><div class="swatches">
+          <div class="sw"><i style="background:#060708"></i><div><b>Void</b><span>#060708</span></div></div>
+          <div class="sw"><i style="background:#0B0D10"></i><div><b>Band</b><span>#0B0D10</span></div></div>
+          <div class="sw"><i style="background:#111418"></i><div><b>Surface</b><span>#111418</span></div></div>
+          <div class="sw"><i style="background:#F3F1EC"></i><div><b>Bone</b><span>#F3F1EC</span></div></div>
+          <div class="sw"><i style="background:rgba(243,241,236,.55)"></i><div><b>Bone 55%</b><span>secondary text</span></div></div>
+          <div class="sw"><i style="background:rgba(243,241,236,.12)"></i><div><b>Bone 12%</b><span>hairlines</span></div></div>
+        </div></div></div>
+      <div class="spec"><div class="spec-h"><b>Status</b><span>switches with the theme</span></div>
+        <div class="spec-b"><span class="chip ok">Open</span><span class="chip warn">Few spots left</span><span class="chip bad">Full</span><span class="chip neutral">Registration opens Dec 1</span></div>
+        <div class="spec-f">Status always pairs a color with a word. Color is never the only signal.</div></div>
+    </section>
+
+    <!-- ================= TYPE ================= -->
+    <section class="sheet" id="type">
+      <header><span class="over">Foundations</span><h2>Type</h2><p>The live apps use DM Sans and the company site uses Suisse Intl. Geist stands in for both here because it's free and close to both. Sizes and tracking are the measured values.</p></header>
+      <div class="spec"><div class="spec-b col">
+        <div class="typerow"><span class="meta">Display<br>72 / 1.1 · 400 · −2%</span><span class="t-display">We power public services.</span></div>
+        <div class="typerow"><span class="meta">H1<br>46 / 1.15 · 400 · −2%</span><span class="t-h1">Day-Use Reservations</span></div>
+        <div class="typerow"><span class="meta">H2 · page title<br>36 / 1.2 · 500</span><span class="t-h2">Facilities</span></div>
+        <div class="typerow"><span class="meta">H3 · section<br>22 / 1.3 · 500</span><span class="t-h3">Address</span></div>
+        <div class="typerow"><span class="meta">Title · card<br>16 / 1.2 · 500</span><span class="t-title">Gambrill State Park</span></div>
+        <div class="typerow"><span class="meta">Body<br>16 / 1.5 · 400</span><span class="t-body">Reservations are required on weekends and holidays between Memorial Day Weekend and Labor Day.</span></div>
+        <div class="typerow"><span class="meta">Small · meta<br>13 / 1.5 · +1%</span><span class="t-small muted">8602 Gambrill Park Rd, Frederick, MD 21702</span></div>
+        <div class="typerow"><span class="meta">Overline · mono<br>11 · +20% · caps</span><span class="over">Backed by</span></div>
+      </div></div>
+    </section>
+
+    <!-- ================= SHAPE ================= -->
+    <section class="sheet" id="shape">
+      <header><span class="over">Foundations</span><h2>Shape &amp; space</h2><p>Three radii and an 8-point grid. Controls are 8px. Photos and cards are 16px. Icon buttons are round.</p></header>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Radius</b><span>8 · 12 · 16 · pill</span></div><div class="spec-b">
+          <div style="display:grid;gap:6px;justify-items:center"><i style="width:72px;height:56px;border:1px solid var(--line-2);border-radius:8px;display:block"></i><span class="mono faint t-small">8 controls</span></div>
+          <div style="display:grid;gap:6px;justify-items:center"><i style="width:72px;height:56px;border:1px solid var(--line-2);border-radius:12px;display:block"></i><span class="mono faint t-small">12 panels</span></div>
+          <div style="display:grid;gap:6px;justify-items:center"><i style="width:72px;height:56px;border:1px solid var(--line-2);border-radius:16px;display:block"></i><span class="mono faint t-small">16 cards</span></div>
+          <div style="display:grid;gap:6px;justify-items:center"><i style="width:72px;height:56px;border:1px solid var(--line-2);border-radius:999px;display:block"></i><span class="mono faint t-small">pill chips</span></div>
+        </div></div>
+        <div class="spec"><div class="spec-h"><b>Spacing</b><span>8-pt grid</span></div><div class="spec-b"><div class="scale">
+          <div><i style="width:4px;height:4px"></i>4</div><div><i style="width:8px;height:8px"></i>8</div><div><i style="width:12px;height:12px"></i>12</div><div><i style="width:16px;height:16px"></i>16</div><div><i style="width:24px;height:24px"></i>24</div><div><i style="width:40px;height:40px"></i>40</div><div><i style="width:56px;height:56px"></i>56</div><div><i style="width:80px;height:80px"></i>80</div>
+        </div></div></div>
+      </div>
+      <div class="spec"><div class="spec-h"><b>Heights</b><span>touch targets ≥ 40px</span></div><div class="spec-b" style="align-items:flex-end">
+        <div style="display:grid;gap:6px"><span class="btn btn-secondary sm">32 small</span></div>
+        <div style="display:grid;gap:6px"><span class="btn btn-primary">40 button</span></div>
+        <div class="input" style="width:200px"><span class="faint">48 input</span></div>
+        <div style="display:grid;gap:6px"><span class="btn btn-primary lg">48 large</span></div>
+      </div></div>
+    </section>
+
+    <!-- ================= BUTTONS ================= -->
+    <section class="sheet" id="buttons">
+      <header><span class="over">Components</span><h2>Buttons</h2><p>Primary buttons always say what happens next and end in an arrow when they lead to another page. A closed state reads as a sentence ("Reservations closed"), not a grayed-out verb.</p></header>
+      <div class="spec"><div class="spec-h"><b>Variants</b><span>.btn-primary · .btn-secondary · .btn-ghost · .btn-danger</span></div><div class="spec-b">
+        <a class="btn btn-primary" href="#booking">Make a reservation <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <button class="btn btn-secondary" data-i="list">List view</button>
+        <button class="btn btn-ghost">Venue details</button>
+        <button class="btn btn-danger">Cancel reservation</button>
+        <button class="btn" disabled>Reservations closed</button>
+      </div></div>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Icon buttons</b><span>40 round · 32 boxed</span></div><div class="spec-b" style="align-items:center">
+          <button class="ibtn" aria-label="Menu" data-i="menu"></button>
+          <button class="ibtn" aria-label="Cart, 2 items" data-i="cart"><span class="badge">2</span></button>
+          <button class="ibtn boxed" aria-label="Previous" data-i="left" data-isz="sm"></button>
+          <button class="ibtn boxed" aria-label="Next" data-i="right" data-isz="sm"></button>
+          <span class="tip"><button class="ibtn" aria-label="Reservation rules" data-i="info"></button><span>Opens 7 days ahead</span></span>
+        </div></div>
+        <div class="spec"><div class="spec-h"><b>Links</b><span>inline · external</span></div><div class="spec-b col">
+          <a class="link-ext" href="#maps">Open in Google Maps <svg class="i sm" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>
+          <span class="t-small muted">Read the <a href="#overlays">cancellation policy</a> before you pay.</span>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ================= INPUTS ================= -->
+    <section class="sheet" id="inputs">
+      <header><span class="over">Components</span><h2>Inputs</h2><p>48px outlined fields with a leading icon. Labels sit above the field and errors sit under it. Helper text says what format the field expects.</p></header>
+      <div class="spec"><div class="spec-h"><b>Search band</b><span>gray band · date + search</span></div><div class="spec-b band">
+        <div class="input" style="width:180px"><input id="in-date" placeholder="Select a date" aria-label="Date"><span data-i="calendar"></span></div>
+        <div class="input" style="flex:1;min-width:220px;max-width:340px"><span data-i="search"></span><input id="in-search" placeholder="Search facilities" aria-label="Search facilities"></div>
+      </div></div>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Text fields</b><span>default · error</span></div><div class="spec-b col">
+          <div class="field"><label for="in-name">Participant name</label><div class="input"><input id="in-name" value="Jordan Alvarez"></div></div>
+          <div class="field err"><label for="in-zip">ZIP code</label><div class="input"><input id="in-zip" value="8570"></div><span class="help">Enter a 5-digit ZIP code. Residents of the county pay the resident rate.</span></div>
+          <div class="field"><label for="in-age">Age on first session</label><div class="input"><select id="in-age"><option>5–7</option><option selected>8–12</option><option>13–17</option></select></div></div>
+        </div></div>
+        <div class="spec"><div class="spec-h"><b>Choice</b><span>checkbox · radio · switch · stepper</span></div><div class="spec-b col">
+          <label class="check"><input type="checkbox" id="in-waiver" checked> I agree to the participant waiver</label>
+          <label class="check"><input type="radio" name="rate" id="in-r1" checked> Resident rate · $25.00</label>
+          <label class="check"><input type="radio" name="rate" id="in-r2"> Non-resident rate · $35.00</label>
+          <label class="check"><span class="switch"><input type="checkbox" id="in-sms" checked><i></i></span> Text me day-of updates</label>
+          <div style="display:flex;align-items:center;gap:14px"><span class="stepper" data-min="1" data-max="8"><button aria-label="Fewer vehicles" data-i="minus" data-isz="sm"></button><output>2</output><button aria-label="More vehicles" data-i="plus" data-isz="sm"></button></span><span>Vehicles</span></div>
+        </div></div>
+      </div>
+      <div class="spec"><div class="spec-h"><b>Date picker</b><span>Mondays closed · dot = few spots</span></div><div class="spec-b band" style="gap:24px">
+        <div class="field" style="width:220px"><label for="in-pick">Visit date</label><div class="input"><input id="in-pick" placeholder="MM/DD/YYYY" readonly><span data-i="calendar"></span></div><span class="help">Booking opens 7 days ahead.</span></div>
+        <div class="cal" data-cal data-for="in-pick"></div>
+      </div></div>
+    </section>
+
+    <!-- ================= CHIPS ================= -->
+    <section class="sheet" id="chips">
+      <header><span class="over">Components</span><h2>Filters &amp; chips</h2><p>Filters are buttons with an icon and a noun. Each opens a menu. Once a filter is applied it fills and shows a count.</p></header>
+      <div class="spec"><div class="spec-h"><b>Filter row</b><span>click to toggle</span></div><div class="spec-b band col">
+        <div class="filters">
+          <div class="input short" style="width:260px"><span data-i="search"></span><input id="in-prog" placeholder="Search by name or ID" aria-label="Search programs"></div>
+          <button class="fbtn" data-toggle aria-pressed="true" data-i="category">Program category <span class="count">2</span></button>
+          <button class="fbtn" data-toggle aria-pressed="false" data-i="pavilion">Facility</button>
+          <button class="fbtn" data-toggle aria-pressed="false" data-i="person">Instructor</button>
+          <button class="fbtn" data-toggle aria-pressed="false" data-i="calendar">Date &amp; time</button>
+          <button class="fbtn" data-toggle aria-pressed="false" data-i="cake">Age</button>
+        </div>
+        <span class="t-small">23 results</span>
+      </div></div>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Status chips</b><span>.chip.ok/.warn/.bad/.neutral</span></div><div class="spec-b"><span class="chip ok">Open</span><span class="chip warn">Waitlist</span><span class="chip bad">Closed for season</span><span class="chip neutral">Opens Dec 1</span><span class="chip ok plain">Resident</span></div></div>
+        <div class="spec"><div class="spec-h"><b>Amenity tags</b><span>.tag</span></div><div class="spec-b"><span class="tag" data-i="pavilion" data-isz="sm">Ramadas</span><span class="tag" data-i="trail" data-isz="sm">Trails</span><span class="tag" data-i="car" data-isz="sm">Parking</span><span class="tag" data-i="users" data-isz="sm">Up to 120</span></div></div>
+      </div>
+    </section>
+
+    <!-- ================= CARDS ================= -->
+    <section class="sheet" id="cards">
+      <header><span class="over">Components</span><h2>Cards</h2><p>Two kinds of card. Service cards on the home page carry a description and a full-width action. Result tiles in lists are just a photo, a name and one line of meta, and the whole tile is the link.</p></header>
+      <div class="spec"><div class="spec-h"><b>Service card</b><span>home · image 16:7.6 · full-width CTA</span></div><div class="spec-b band"><div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr))">
+        <div class="cta-card"><div class="ph" data-scene="forest" data-label="photo"></div><div class="body"><h3>Day-use reservations</h3><p>Reservations are required on weekends and holidays between Memorial Day Weekend and Labor Day.</p><a class="btn btn-primary block" href="#booking">Make a reservation <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>
+        <div class="cta-card"><div class="ph" data-scene="lake" data-label="photo"></div><div class="body"><h3>Our parks</h3><p>Learn about all the amenities we have to offer at each of our parks.</p><a class="btn btn-primary block" href="#maps">Explore our parks <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>
+        <div class="cta-card"><div class="ph" data-scene="field" data-label="photo"></div><div class="body"><h3>School break camps</h3><p>Camps for kindergarten through 5th grade, Monday to Thursday, 7:30 AM to 5:00 PM.</p><a class="btn btn-primary block" href="#overlays">Discover <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div></div>
+      </div></div></div>
+      <div class="spec"><div class="spec-h"><b>Result tiles</b><span>facility · program · membership · loading</span></div><div class="spec-b"><div class="cards">
+        <a class="tile" href="#maps"><div class="ph" data-scene="desert"></div><h3>Cienega Wash Park</h3><span class="sub">4200 N Cienega Rd, Saguaro County</span></a>
+        <a class="tile" href="#overlays"><div class="ph" data-scene="field"></div><h3>After School Program 2026/2027</h3><span class="sub">Ages 4 – 11<br>Coordinator: Dana Whitfield</span></a>
+        <a class="tile" href="#checkout"><div class="ph" data-scene="forest"></div><div class="row"><h3>Archery Pass</h3><span class="chip ok">Open</span></div><span class="sub">Annual · $45.00</span></a>
+        <div class="tile" aria-busy="true"><div class="ph skel" style="background-color:transparent"></div><span class="skel" style="height:16px;width:70%"></span><span class="skel" style="height:12px;width:90%"></span></div>
+      </div></div></div>
+      <div class="spec"><div class="spec-h"><b>Stat tiles</b><span>staff side</span></div><div class="spec-b"><div class="cards">
+        <div class="stat"><span class="over">Reservations today</span><b>1,284</b><span class="delta">+12% vs last Saturday</span></div>
+        <div class="stat"><span class="over">Lots over 90%</span><b>3 of 11</b><div class="meter bad"><i style="width:27%"></i></div></div>
+        <div class="stat"><span class="over">Program fill rate</span><b>78%</b><div class="meter"><i style="width:78%"></i></div></div>
+        <div class="stat"><span class="over">Revenue, month to date</span><b>$61,420</b><span class="delta">On pace for $94K</span></div>
+      </div></div></div>
+    </section>
+
+    <!-- ================= NAV ================= -->
+    <section class="sheet" id="nav">
+      <header><span class="over">Components</span><h2>Navigation</h2><p>The resident app bar keeps three things: a menu, the agency name and the cart. On desktop the links come out of the drawer. The agency's name is the brand, and the platform's name doesn't appear.</p></header>
+      <div class="spec"><div class="spec-h"><b>App bar</b><span>mobile · desktop</span></div><div class="spec-b col">
+        <div class="appbar"><button class="ibtn" aria-label="Menu" data-i="menu"></button><span class="title">Saguaro County Parks &amp; Recreation</span><button class="ibtn" aria-label="Cart, 2 items" data-i="cart"><span class="badge">2</span></button></div>
+        <div class="appbar"><span class="title" style="padding-left:12px">Saguaro County Parks &amp; Recreation</span><nav><a href="#cards">Facilities</a><a href="#booking" class="on">Reservations</a><a href="#overlays">Programs</a><a href="#checkout">Memberships</a><a href="#nav">About</a></nav><button class="ibtn" aria-label="Account" data-i="person"></button><button class="ibtn" aria-label="Cart" data-i="cart"></button></div>
+      </div></div>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Drawer</b><span>opens from the menu</span></div><div class="spec-b band"><nav class="drawer" aria-label="Drawer"><a href="#nav" class="on" data-i="home">Home</a><a href="#booking" data-i="calendar">Day-use reservations</a><a href="#cards" data-i="pavilion">Facilities</a><a href="#overlays" data-i="users">Programs</a><a href="#checkout" data-i="ticket">Memberships</a><hr><a href="#nav" data-i="person">My account</a><a href="#nav" data-i="info">FAQs</a></nav></div></div>
+        <div class="spec"><div class="spec-h"><b>Wayfinding</b><span>tabs · breadcrumbs · pager · steps</span></div><div class="spec-b col" style="gap:22px">
+          <div class="tabs" role="tablist"><button role="tab" aria-selected="true">Upcoming</button><button role="tab" aria-selected="false">Past</button><button role="tab" aria-selected="false">Cancelled</button></div>
+          <div class="crumbs"><a href="#nav">Facilities</a><span>/</span><a href="#nav">Mesquite Flats Regional Park</a><span>/</span><span>Group Pavilion</span></div>
+          <div class="pager"><button aria-label="Previous page" data-i="left" data-isz="sm"></button><button data-p aria-current="page">1</button><button data-p>2</button><button data-p>3</button><span class="faint">…</span><button data-p>8</button><button aria-label="Next page" data-i="right" data-isz="sm"></button></div>
+          <ol class="steps"><li class="done">Choose date</li><li class="done">Pick a time</li><li class="now">Your details</li><li>Payment</li></ol>
+        </div></div>
+      </div>
+      <div class="spec"><div class="spec-h"><b>Footer</b><span>shortcuts · agency links · social</span></div><div class="spec-b flush"><div class="footer">
+        <div><h4>Popular shortcuts</h4><a href="#booking">Day-use reservations</a><a href="#cards">Our parks</a></div>
+        <div><h4>Additional links</h4><a href="#nav">Our department</a><a href="#nav">More county services</a><a href="#nav">About</a></div>
+        <div><h4>Follow</h4><div class="socials"><span>IG</span><span>X</span><span>YT</span></div></div>
+      </div></div></div>
+    </section>
+
+    <!-- ================= OVERLAYS ================= -->
+    <section class="sheet" id="overlays">
+      <header><span class="over">Components</span><h2>Dialogs &amp; feedback</h2><p>Registration opens in a dialog over the list, so people don't lose their filters. The dialog has a summary card at the top, details under it, and then one accordion per location with its sessions.</p></header>
+      <div class="spec"><div class="spec-h"><b>Register dialog</b><span>summary · contact · filters · accordion · sessions</span></div><div class="spec-b flush"><div class="dialog-demo">
+        <div class="dialog" role="dialog" aria-labelledby="dlg-t">
+          <div class="dh"><div><h3 id="dlg-t">Register for a program</h3><p>Available payment plans apply in cart. Additional discounts may apply in cart.</p></div><button class="ibtn boxed" aria-label="Close" data-i="close" data-isz="sm"></button></div>
+          <div class="db">
+            <div class="summary"><div class="ph" data-scene="field"></div><div class="mid"><span class="chip ok">Open</span><b>2026 School Break Camps</b></div><div class="price"><b>$25.00</b><div>per activity</div></div></div>
+            <p class="t-small muted" style="margin:0">Camps run Monday to Thursday, 7:30 AM to 5:00 PM: sports, playground games, arts and crafts, theme days and board games. Our facilities are not licensed child care providers. Programs are drop-in.</p>
+            <div class="contact"><span class="t-h3" style="font-size:18px">Coordinator</span><div data-i="person">Dana Whitfield</div><div data-i="mail">dana.whitfield@saguaro.example</div></div>
+            <div class="filters"><div class="input short" style="width:180px"><span data-i="search"></span><input id="in-kw" placeholder="Keyword" aria-label="Keyword"></div><button class="fbtn" data-toggle aria-pressed="false" data-i="pavilion">Facility</button><button class="fbtn" data-toggle aria-pressed="false" data-i="calendar">Date &amp; time</button><button class="fbtn" data-toggle aria-pressed="false" data-i="cake">Age</button></div>
+            <div>
+              <div class="acc" data-open="true"><button aria-expanded="true">Cienega Community Center <svg class="i" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button><div class="acc-b"><p>Phone 520-555-0141 · Ages 5–12 · Bring lunch and a water bottle.</p><div class="scroll-x"><table class="sessions"><thead><tr><th>Session</th><th>Dates</th><th>Spots</th><th class="num">Price</th><th></th></tr></thead><tbody>
+                <tr><td>Winter Break A</td><td class="num">Dec 22 – Dec 24</td><td><span class="chip ok">14 left</span></td><td class="num">$75.00</td><td><button class="btn btn-primary sm" data-toast="Winter Break A added to cart">Add</button></td></tr>
+                <tr><td>Winter Break B</td><td class="num">Dec 29 – Dec 31</td><td><span class="chip warn">3 left</span></td><td class="num">$75.00</td><td><button class="btn btn-primary sm" data-toast="Winter Break B added to cart">Add</button></td></tr>
+                <tr><td>Spring Break</td><td class="num">Mar 16 – Mar 19</td><td><span class="chip neutral">Opens Feb 1</span></td><td class="num">$100.00</td><td><button class="btn sm" disabled>Add</button></td></tr>
+              </tbody></table></div></div></div>
+              <div class="acc" data-open="false"><button aria-expanded="false">Mesquite Flats Center <svg class="i" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></svg></button><div class="acc-b"><div class="empty"><b>No activities available</b><span>New sessions are posted on the first of each month.</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div></div></div>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Alerts</b><span>info · warning · error</span></div><div class="spec-b col">
+          <div class="alert info" data-i="info"><div><b>Weekend entry needs a reservation</b>Weekday entry is handled at the gate. No reservation needed.</div></div>
+          <div class="alert warn" data-i="warn"><div><b>Lot A is almost full</b>Arrive before 10:00 AM or park at Flats Overflow.</div></div>
+          <div class="alert bad" data-i="warn"><div><b>Your card was declined</b>Check the card number and ZIP code, or use a different card.</div></div>
+        </div></div>
+        <div class="spec"><div class="spec-h"><b>Toast · empty state</b><span>click to try</span></div><div class="spec-b col">
+          <div class="toast"><span>Added to cart</span><button>View cart</button></div>
+          <button class="btn btn-secondary" data-toast="Reservation saved for Sat, Nov 21">Show a toast</button>
+          <div class="empty" data-i="calendar" style="border:1px dashed var(--line-2);border-radius:var(--r-md)"><b>Select a date</b><span>Select a date above to see availability</span></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ================= BOOKING ================= -->
+    <section class="sheet" id="booking">
+      <header><span class="over">Patterns</span><h2>Booking</h2><p>The reservation grid shows venues as rows and hours as columns, the way staff already think about a park. Click open hours to build a booking. The list view swaps the grid for one card per park.</p></header>
+      <div class="spec"><div class="spec-h"><b>Time view</b><span>click open cells · step days</span></div><div class="spec-b flush"><div data-timeline></div></div></div>
+      <div class="spec"><div class="spec-h"><b>List view</b><span>park hero · venue rows</span></div><div class="spec-b band col">
+        <div class="park"><div class="ph hero" data-scene="field"><h3>Mesquite Flats Regional Park</h3><a class="btn sm" href="#maps">Facility details</a></div>
+          <div class="venue"><div class="l"><span>Group Pavilion</span><span class="thumbs"><i></i><i></i><i></i><i></i></span><a href="#maps" class="t-small">Venue details</a></div><div class="r"><span class="t-small muted num">$85.00/day</span><a class="btn btn-primary" href="#booking">Select times</a></div></div>
+          <div class="venue"><div class="l"><span>Ramada #1</span><span class="thumbs"><i></i><i></i><i></i></span><a href="#maps" class="t-small">Venue details</a></div><div class="r"><span class="tip"><button class="ibtn" aria-label="Why closed" data-i="info"></button><span>Closed Nov 1 – Feb 28</span></span><button class="btn" disabled>Reservations closed</button></div></div>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- ================= MAPS ================= -->
+    <section class="sheet" id="maps">
+      <header><span class="over">Patterns</span><h2>Maps</h2><p>The map and the list stay in sync. Pick a row and the map pans to it, or pick a pin and its row highlights. Nearby pins merge into a count until you zoom in. The basemap is drawn locally and the county is fictional.</p></header>
+      <div class="spec"><div class="spec-h"><b>Facility finder</b><span>drag · scroll to zoom · click a cluster</span></div><div class="spec-b flush">
+        <div class="mapwrap" data-facility-map>
+          <div class="maplist"><div class="mh"><div class="input short"><span data-i="search"></span><input id="in-map" placeholder="Search facilities" aria-label="Search facilities on map"></div><div class="filters" style="gap:8px"><button class="fbtn" data-toggle aria-pressed="false" style="height:32px;font-size:13px" data-i="pavilion" data-isz="sm">Type</button><button class="fbtn" data-toggle aria-pressed="false" style="height:32px;font-size:13px" data-i="filter" data-isz="sm">Amenities</button></div><span class="t-small count"></span></div><div class="items"></div></div>
+          <div class="map big" role="application" aria-label="Facility map"></div>
+        </div>
+      </div></div>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Lot capacity</b><span>day-use · live fill</span></div><div class="spec-b flush"><div class="map" data-capacity-map style="height:340px" aria-label="Parking lot capacity map"></div></div><div class="spec-f">This is the job of Maryland's day-use system: spread visitors out before a lot fills, so staff don't have to close the gate.</div></div>
+        <div class="spec"><div class="spec-h"><b>Location block</b><span>detail page</span></div><div class="spec-b col">
+          <div class="minimap" data-mini-map data-place="p3"></div>
+          <span class="t-h3">Address</span>
+          <div style="display:flex;gap:8px" class="muted" data-i="pin">1801 E Flats Dr, Saguaro County</div>
+          <a class="link-ext" href="#maps">Open in Google Maps <svg class="i sm" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg></a>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ================= CHECKOUT ================= -->
+    <section class="sheet" id="checkout">
+      <header><span class="over">Patterns</span><h2>Cart &amp; checkout</h2><p>A household can mix programs, passes and reservations in one cart, so there's a single payment and a single receipt. The confirmation ends in a pass that works at the gate.</p></header>
+      <div class="spec"><div class="spec-b col"><ol class="steps"><li class="done">Cart</li><li class="done">Participants</li><li class="now">Payment</li><li>Confirmation</li></ol></div></div>
+      <div class="grid2">
+        <div class="spec"><div class="spec-h"><b>Cart</b><span>line items · totals</span></div><div class="spec-b">
+          <div class="cart"><div class="cart-h"><b>Your cart</b><span class="faint t-small">3 items</span></div>
+            <div class="line"><div class="ph" data-scene="field"></div><div><b>Winter Break A</b><span class="faint">Jordan Alvarez · Dec 22–24</span></div><div class="amt">$75.00</div></div>
+            <div class="line"><div class="ph" data-scene="lake"></div><div><b>Day-use entry</b><span class="faint">Rillito Lake · Sat, Nov 21 · 2 vehicles</span></div><div class="amt">$10.00</div></div>
+            <div class="line"><div class="ph" data-scene="forest"></div><div><b>Archery Pass</b><span class="faint">Annual · resident</span></div><div class="amt">$45.00</div></div>
+            <div class="totals"><div><span class="muted">Subtotal</span><span>$130.00</span></div><div><span class="muted">Sibling discount</span><span>−$7.50</span></div><div><span class="muted">Service fee</span><span>$2.45</span></div><div class="grand"><span>Total</span><span>$124.95</span></div><button class="btn btn-primary block lg" data-toast="Sample checkout: no payment taken">Continue to payment</button></div>
+          </div></div></div>
+        <div class="spec"><div class="spec-h"><b>Payment · pass</b><span>sample only</span></div><div class="spec-b col">
+          <div class="field"><label for="in-card">Card number</label><div class="input"><span data-i="card"></span><input id="in-card" placeholder="Card number" autocomplete="off" inputmode="numeric"></div><span class="help">This is a sample form. Nothing you type is sent anywhere.</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="field"><label for="in-exp">Expiry</label><div class="input"><input id="in-exp" placeholder="MM / YY" autocomplete="off"></div></div><div class="field"><label for="in-pzip">Billing ZIP</label><div class="input"><input id="in-pzip" placeholder="85701" autocomplete="off"></div></div></div>
+          <div class="pass"><div style="display:grid;gap:10px"><span class="chip ok">Confirmed</span><b style="font-weight:500;font-size:18px">Rillito Lake Day-Use</b><dl><dt>Date</dt><dd>Sat, Nov 21, 2026</dd><dt>Entry</dt><dd>Any time after 8:00 AM</dd><dt>Vehicles</dt><dd>2</dd><dt>Order</dt><dd class="mono">RL-20261121-0384</dd></dl></div><canvas class="qr" aria-label="Sample pass code"></canvas></div>
+        </div></div>
+      </div>
+    </section>
+
+    <!-- ================= STAFF ================= -->
+    <section class="sheet" id="staff">
+      <header><span class="over">Patterns</span><h2>Staff console</h2><p>The agency side uses the same components, packed tighter. Staff need to scan a day's bookings, see trouble at a glance and act without leaving the table.</p></header>
+      <div class="spec"><div class="spec-h"><b>Reservations table</b><span>sticky header · status · capacity</span></div><div class="spec-b col band">
+        <div class="filters"><div class="input short" style="width:260px"><span data-i="search"></span><input id="in-staff" placeholder="Search name, order or plate" aria-label="Search reservations"></div><button class="fbtn" data-toggle aria-pressed="true" data-i="calendar">Today <span class="count">1</span></button><button class="fbtn" data-toggle aria-pressed="false" data-i="pavilion">Facility</button><button class="fbtn" data-toggle aria-pressed="false" data-i="filter">Status</button><span style="flex:1"></span><button class="btn btn-secondary" data-toast="Export started: 1,284 rows">Export CSV</button></div>
+        <div class="scroll-x" style="background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md)"><table class="table"><thead><tr><th>Order</th><th>Name</th><th>Facility</th><th>Arrival</th><th>Status</th><th class="num">Party</th><th>Lot fill</th><th class="num">Paid</th></tr></thead><tbody>
+          <tr><td class="id">RL-0384</td><td>Jordan Alvarez</td><td>Rillito Lake</td><td class="num">8:00 AM</td><td><span class="chip ok">Checked in</span></td><td class="num">2 vehicles</td><td><div class="meter warn" style="width:90px"><i style="width:71%"></i></div></td><td class="num">$10.00</td></tr>
+          <tr><td class="id">CW-1192</td><td>Priya Raman</td><td>Cienega Wash · Ramada #2</td><td class="num">11:00 AM</td><td><span class="chip neutral">Upcoming</span></td><td class="num">40 people</td><td><div class="meter" style="width:90px"><i style="width:22%"></i></div></td><td class="num">$40.00</td></tr>
+          <tr><td class="id">BF-0057</td><td>Marcus Lee</td><td>Bayfront · Beach Lot A</td><td class="num">9:30 AM</td><td><span class="chip bad">No-show</span></td><td class="num">1 vehicle</td><td><div class="meter bad" style="width:90px"><i style="width:96%"></i></div></td><td class="num">$5.00</td></tr>
+          <tr><td class="id">MF-2210</td><td>Elena Ortiz</td><td>Mesquite Flats · Ballfield B</td><td class="num">4:00 PM</td><td><span class="chip warn">Refund requested</span></td><td class="num">22 people</td><td><div class="meter" style="width:90px"><i style="width:12%"></i></div></td><td class="num">$54.00</td></tr>
+        </tbody></table></div>
+      </div></div>
+    </section>
+
+    <footer class="foot">
+      <span>Unofficial design study for interview prep. It isn't affiliated with or endorsed by Kaizen or any agency. Values were measured from public pages on November 20, 2026. Names, places, prices and the county are sample data.</span>
+      <span>References: kaizenlabs.co · parkdayuse.maryland.gov · explore.pima.gov</span>
+    </footer>
+  </main>
+</div>
+
+<div id="live-toast" class="toast" role="status" aria-live="polite"><span>Added to cart</span><button>Dismiss</button></div>
+
+</body>
+</html>
